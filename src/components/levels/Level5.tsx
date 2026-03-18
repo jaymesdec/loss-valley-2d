@@ -79,6 +79,7 @@ export function Level5({ onComplete, onEarnStar, existingStars }: Level5Props) {
       loss: initialLoss,
     };
     setCurrentSteps([initialStep]);
+    const collectedSteps: TrainingStep[] = [initialStep];
 
     const intervalId = setInterval(() => {
       if (!runningRef.current) {
@@ -107,6 +108,7 @@ export function Level5({ onComplete, onEarnStar, existingStars }: Level5Props) {
         loss: Math.min(loss, 10000),
       };
 
+      collectedSteps.push(newStep);
       setCurrentSteps((prev) => [...prev, newStep]);
 
       if (stepCount >= LEVEL5_TRAINING_STEPS) {
@@ -118,7 +120,7 @@ export function Level5({ onComplete, onEarnStar, existingStars }: Level5Props) {
           learningRate: currentLR,
           batchSize: currentBS,
           lossFunction: currentLF,
-          steps: [],  // Will be populated from state
+          steps: collectedSteps,
           finalLoss: Math.min(loss, 10000),
         };
 
@@ -311,7 +313,7 @@ export function Level5({ onComplete, onEarnStar, existingStars }: Level5Props) {
               />
             </div>
 
-            {/* Previous attempt results */}
+            {/* Previous attempt results with mini loss curves */}
             {results.length > 0 && (
               <div className="flex gap-3">
                 {results.map((result, index) => (
@@ -320,12 +322,18 @@ export function Level5({ onComplete, onEarnStar, existingStars }: Level5Props) {
                     className="rounded-lg border border-warm-gray-700 bg-charcoal-light p-2 text-center"
                   >
                     <p
-                      className="text-xs font-semibold"
+                      className="mb-1 text-xs font-semibold"
                       style={{ color: ATTEMPT_COLORS[index] }}
                     >
                       Attempt {index + 1}
                     </p>
-                    <p className="font-mono text-sm text-warm-gray-300">
+                    <LossCurve
+                      steps={result.steps}
+                      maxSteps={LEVEL5_TRAINING_STEPS}
+                      width={160}
+                      height={100}
+                    />
+                    <p className="mt-1 font-mono text-sm text-warm-gray-300">
                       {result.finalLoss.toFixed(2)}
                     </p>
                     <p className="text-[10px] text-warm-gray-500">

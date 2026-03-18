@@ -4,6 +4,7 @@ import { Scatterplot } from '@/components/canvas/Scatterplot';
 import { LossCurve } from '@/components/canvas/LossCurve';
 import { BatchScatterplot } from '@/components/canvas/BatchScatterplot';
 import { Slider } from '@/components/ui/Slider';
+import { StarDisplay } from '@/components/ui/StarDisplay';
 import { RevealModal } from '@/components/ui/RevealModal';
 import { getSyntheticDataset } from '@/lib/datasets';
 import {
@@ -142,6 +143,10 @@ export function Level4({ onComplete, onEarnStar, existingStars }: Level4Props) {
   const revealItems = useMemo(
     () => [
       {
+        text: `Your final loss was ${currentLoss.toFixed(2)} using batch size ${batchSize} over ${stepCount} steps.`,
+        highlight: true,
+      },
+      {
         text: 'You just trained a model using batches — the same way real machine learning works!',
       },
       {
@@ -167,7 +172,7 @@ export function Level4({ onComplete, onEarnStar, existingStars }: Level4Props) {
         highlight: true,
       },
     ],
-    []
+    [currentLoss, batchSize, stepCount]
   );
 
   return (
@@ -294,12 +299,20 @@ export function Level4({ onComplete, onEarnStar, existingStars }: Level4Props) {
             )}
 
             {levelComplete && (
-              <button
-                onClick={handleComplete}
-                className="rounded-lg bg-emerald px-4 py-3 font-semibold text-white transition-colors hover:bg-emerald-dark focus:outline-none focus:ring-2 focus:ring-emerald focus:ring-offset-2 focus:ring-offset-charcoal"
-              >
-                Complete Level
-              </button>
+              <div className="flex flex-col gap-3">
+                <div className="rounded-lg border border-warm-gray-700 bg-charcoal-light p-3 text-center">
+                  <p className="mb-2 text-sm font-semibold text-warm-gray-200">
+                    Budget spent! Final loss: {currentLoss.toFixed(2)}
+                  </p>
+                  <StarDisplay earned={displayStars} />
+                </div>
+                <button
+                  onClick={handleComplete}
+                  className="rounded-lg bg-emerald px-4 py-3 font-semibold text-white transition-colors hover:bg-emerald-dark focus:outline-none focus:ring-2 focus:ring-emerald focus:ring-offset-2 focus:ring-offset-charcoal"
+                >
+                  Complete Level
+                </button>
+              </div>
             )}
 
             {/* Vocabulary */}

@@ -40,7 +40,15 @@ export type Screen =
   | 'level3'
   | 'level4'
   | 'level5'
+  | 'fieldReport'
   | 'results';
+
+export interface FieldReport {
+  question1: string;
+  question2: string;
+  question3: string;
+  feedback: string;
+}
 
 export interface LevelProgress {
   completed: boolean;
@@ -65,6 +73,7 @@ export type GameAction =
   | { type: 'SET_SCREEN'; screen: Screen }
   | { type: 'COMPLETE_LEVEL'; levelId: LevelId; stars: number; score?: number }
   | { type: 'EARN_STAR'; levelId: LevelId; stars: number }
+  | { type: 'SAVE_FIELD_REPORT'; report: FieldReport }
   | { type: 'LOAD_SAVED'; progress: PlayerProgress; soundMuted: boolean }
   | { type: 'TOGGLE_SOUND' };
 

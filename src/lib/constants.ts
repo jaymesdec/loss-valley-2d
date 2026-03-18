@@ -71,6 +71,7 @@ export const STORAGE_KEYS = {
   playerName: 'lv2-player-name',
   progress: 'lv2-progress',
   soundMuted: 'lv2-sound-muted',
+  fieldReport: 'lv2-field-report',
 } as const;
 
 // Level metadata

@@ -1,6 +1,6 @@
 import { useReducer, useEffect, useCallback } from 'react';
-import type { GameState, GameAction, PlayerProgress, LevelId, LevelProgress } from '@/types';
-import { saveProgress, loadProgress, saveSoundPreference, loadSoundPreference } from '@/lib/storage';
+import type { GameState, GameAction, PlayerProgress, LevelId, LevelProgress, FieldReport } from '@/types';
+import { saveProgress, loadProgress, saveSoundPreference, loadSoundPreference, saveFieldReport } from '@/lib/storage';
 import { LEVEL_ORDER } from '@/lib/constants';
 
 function createInitialLevelProgress(): Record<LevelId, LevelProgress> {
@@ -66,7 +66,8 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       };
 
       const nextLevel = getNextLevel(levelId);
-      const nextScreen = nextLevel ?? 'results';
+      // After level5, go to field report instead of results
+      const nextScreen = nextLevel ?? (levelId === 'level5' ? 'fieldReport' : 'results');
 
       return {
         ...state,
@@ -76,6 +77,14 @@ function gameReducer(state: GameState, action: GameAction): GameState {
           currentLevel: nextLevel ?? levelId,
           levels: updatedLevels,
         },
+      };
+    }
+
+    case 'SAVE_FIELD_REPORT': {
+      saveFieldReport(action.report);
+      return {
+        ...state,
+        screen: 'results',
       };
     }
 
@@ -158,6 +167,11 @@ export function useGameState() {
     []
   );
 
+  const submitFieldReport = useCallback(
+    (report: FieldReport) => dispatch({ type: 'SAVE_FIELD_REPORT', report }),
+    []
+  );
+
   const toggleSound = useCallback(() => dispatch({ type: 'TOGGLE_SOUND' }), []);
 
   return {
@@ -167,6 +181,7 @@ export function useGameState() {
     setScreen,
     completeLevel,
     earnStar,
+    submitFieldReport,
     toggleSound,
   };
 }

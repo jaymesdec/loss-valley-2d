@@ -6,6 +6,7 @@ import { Level2 } from '@/components/levels/Level2';
 import { Level3 } from '@/components/levels/Level3';
 import { Level4 } from '@/components/levels/Level4';
 import { Level5 } from '@/components/levels/Level5';
+import { FieldReport } from '@/components/FieldReport';
 import { Results } from '@/components/Results';
 import { MuteButton } from '@/components/ui/MuteButton';
 import { StarDisplay } from '@/components/ui/StarDisplay';
@@ -83,7 +84,7 @@ function WelcomeBack({
 }
 
 export default function App() {
-  const { state, startGame, setScreen, completeLevel, earnStar, toggleSound } =
+  const { state, startGame, setScreen, completeLevel, earnStar, submitFieldReport, toggleSound } =
     useGameState();
   const viewportWidth = useViewportWidth();
 
@@ -169,6 +170,13 @@ export default function App() {
           onComplete={(stars, score) => completeLevel('level5', stars, score)}
           onEarnStar={(stars) => earnStar('level5', stars)}
           existingStars={state.progress.levels.level5.stars}
+        />
+      )}
+
+      {state.screen === 'fieldReport' && (
+        <FieldReport
+          progress={state.progress}
+          onComplete={submitFieldReport}
         />
       )}
 

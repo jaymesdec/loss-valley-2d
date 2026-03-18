@@ -1,4 +1,4 @@
-import type { PlayerProgress } from '@/types';
+import type { PlayerProgress, FieldReport } from '@/types';
 import { STORAGE_KEYS } from './constants';
 
 /** Save player progress to localStorage */
@@ -38,5 +38,25 @@ export function loadSoundPreference(): boolean {
     return stored ? JSON.parse(stored) === true : false;
   } catch {
     return false;
+  }
+}
+
+/** Save field report (auto-save on keystrokes) */
+export function saveFieldReport(report: FieldReport): void {
+  try {
+    localStorage.setItem(STORAGE_KEYS.fieldReport, JSON.stringify(report));
+  } catch {
+    // Silently fail
+  }
+}
+
+/** Load field report */
+export function loadFieldReport(): FieldReport | null {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEYS.fieldReport);
+    if (!stored) return null;
+    return JSON.parse(stored) as FieldReport;
+  } catch {
+    return null;
   }
 }

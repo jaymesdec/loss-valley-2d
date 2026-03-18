@@ -21,7 +21,7 @@ interface RunConfig {
   description: string;
   learningRate: number;
   color: string;
-  expectedOutcome: 'finds_fit' | 'goes_crazy';
+  expectedOutcome: 'finds_fit' | 'overshoots';
 }
 
 const RUNS: RunConfig[] = [
@@ -44,11 +44,11 @@ const RUNS: RunConfig[] = [
     description: 'The computer can make big jumps to the slope and intercept each try.',
     learningRate: 0.1,
     color: '#EF4444',
-    expectedOutcome: 'goes_crazy',
+    expectedOutcome: 'overshoots',
   },
 ];
 
-type Prediction = 'finds_fit' | 'goes_crazy' | null;
+type Prediction = 'finds_fit' | 'overshoots' | null;
 
 export function Level3({ onComplete, onEarnStar, existingStars }: Level3Props) {
   const dataset = useMemo(() => getSyntheticDataset(), []);
@@ -139,7 +139,7 @@ export function Level3({ onComplete, onEarnStar, existingStars }: Level3Props) {
   }, []);
 
   const handlePrediction = useCallback(
-    (prediction: 'finds_fit' | 'goes_crazy') => {
+    (prediction: 'finds_fit' | 'overshoots') => {
       setPredictions((prev) => {
         const updated = [...prev];
         updated[currentRunIndex] = prediction;
@@ -186,9 +186,9 @@ export function Level3({ onComplete, onEarnStar, existingStars }: Level3Props) {
 
       const finalLoss = steps[steps.length - 1].loss;
       const initialLoss = steps[0].loss;
-      const didGoCrazy = finalLoss > initialLoss * 0.8 || finalLoss > 500;
-      const actualOutcome: 'finds_fit' | 'goes_crazy' = didGoCrazy
-        ? 'goes_crazy'
+      const didOvershoot = finalLoss > initialLoss * 0.8 || finalLoss > 500;
+      const actualOutcome: 'finds_fit' | 'overshoots' = didOvershoot
+        ? 'overshoots'
         : 'finds_fit';
       const predicted = predictions[runIndex];
       return predicted === actualOutcome ? 'Correct!' : 'Not quite';
@@ -198,7 +198,7 @@ export function Level3({ onComplete, onEarnStar, existingStars }: Level3Props) {
 
   const getPredictionDisplayText = (prediction: Prediction): string => {
     if (prediction === 'finds_fit') return 'finds a good fit';
-    if (prediction === 'goes_crazy') return 'goes crazy';
+    if (prediction === 'overshoots') return 'overshoots';
     return '';
   };
 
@@ -345,10 +345,10 @@ export function Level3({ onComplete, onEarnStar, existingStars }: Level3Props) {
                     Find a good fit
                   </button>
                   <button
-                    onClick={() => handlePrediction('goes_crazy')}
+                    onClick={() => handlePrediction('overshoots')}
                     className="flex-1 rounded-lg border border-crimson bg-crimson/10 px-3 py-2 text-sm font-medium text-crimson transition-colors hover:bg-crimson/20"
                   >
-                    Go crazy
+                    Overshoot
                   </button>
                 </div>
               </div>
